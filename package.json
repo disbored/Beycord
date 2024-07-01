@@ -34,7 +34,6 @@
     "eris-sharder": "^1.10.0",
     "fs": "^0.0.1-security",
     "fuse.js": "^6.4.6",
-    "gifencoder": "^2.0.1",
     "init": "^0.1.2",
     "jimp": "^0.16.1",
     "mongodb": "^3.6.9",
