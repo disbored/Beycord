@@ -20,7 +20,7 @@ mongo.connect((err) => {
 //HANDLERS ####################################################################################
 
 //Discord.Collection Clients Adder
-const client = new Eris(process.env.TOKEN, { restMode: true, maxShards: "auto", intents: ['guilds', 'guildsMembers', 'guildBans', 'guildEmojis', 'guildIntegrations', 'guildWebhooks', 'guildInvites', 'guildVoiceStates', 'guildPresenses', 'guildIntegrations', 'guildMessages', 'guildMessageReactions', 'guildMessageTyping', 'directMessages', 'directMessageReactions', 'directMessageTyping'] });
+const client = new Eris(process.env.TOKEN, { restMode: true, maxShards: "auto", intents: ['guilds', 'guildBans', 'guildEmojis', 'guildIntegrations', 'guildWebhooks', 'guildInvites', 'guildVoiceStates', 'guildIntegrations', 'guildMessages', 'guildMessageReactions', 'guildMessageTyping', 'directMessages', 'directMessageReactions', 'directMessageTyping'] });
 client.commands = new (Discord.Collection || Map)();
 client.beys = new (Discord.Collection || Map)();
 client.parts = new (Discord.Collection || Map)();
