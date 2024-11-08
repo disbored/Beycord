@@ -1,23 +1,38 @@
 const Discord = require("discord.js");
 
-module.exports.run = async (client, message, args, prefix, pltayer, db) => {
-    let stats = await db.collection("users").findOne({_id: message.author.id});
-    if(!stats) return message.reply(`it seems you haven't started the game yet. Please type \`${prefix}start\` to begin the game.`);
-    if(args[0] && args[0].toLowerCase() === "upgrade"){
-        if(stats.hslots >= 50) return message.reply(`you've already reached the maximum amount of transaction history slots that can be unlocked.`);
-        if(stats.gv < 2) return message.reply("you need 2 Golden Valtz to upgrade your transaction history slots.")
-        db.collection("users").updateOne({_id: message.author.id}, {$set: {hslots: stats.hslots + 10, gv: stats.gv - 2}});
-        message.channel.createMessage(`Purchase made! You now have ${stats.hslots + 10} transaction history slots.`);
-    }else if(args[0] && args[0].toLowerCase() == "clear"){
-        db.collection("users").updateOne({_id: message.author.id}, {$set: {histories: []}});
-        message.channel.createMessage("Histories cleared!")
-    }else{
-        let histories = stats.histories.join("\n");
-        let embed = new Discord.MessageEmbed()
-        .setTitle(`Your transaction histories (${stats.histories.length}/${stats.hslots})`)
-        .setDescription(histories || "You have no recorded transaction histories.")
-        .setColor("#7f7fff");
-        message.channel.createMessage({embed: embed});
+module.exports.run = async (client, message, args, prefix, player, db) => {
+    let stats = await db.collection("users").findOne({ _id: message.author.id });
+    if (!stats) return message.reply(`It seems you haven't started the game yet. Please type \`${prefix}start\` to begin the game.`);
+
+    // Handle 'upgrade' option
+    if (args[0]?.toLowerCase() === "upgrade") {
+        if (stats.hslots >= 50) {
+            return message.reply(`You've already reached the maximum amount of transaction history slots that can be unlocked.`);
+        }
+        if (stats.gv < 2) {
+            return message.reply("You need 2 Golden Valtz to upgrade your transaction history slots.");
+        }
+
+        // Update user's stats for the upgrade
+        stats.hslots += 10;
+        stats.gv -= 2;
+        await db.collection("users").updateOne({ _id: message.author.id }, { $set: { hslots: stats.hslots, gv: stats.gv } });
+
+        message.channel.send(`Purchase made! You now have ${stats.hslots} transaction history slots.`);
+
+        // Handle 'clear' option
+    } else if (args[0]?.toLowerCase() === "clear") {
+        await db.collection("users").updateOne({ _id: message.author.id }, { $set: { histories: [] } });
+        message.channel.send("Histories cleared!");
+
+        // Show transaction histories
+    } else {
+        let histories = stats.histories.length > 0 ? stats.histories.join("\n") : "You have no recorded transaction histories.";
+        let embed = new Discord.EmbedBuilder()
+            .setTitle(`Your transaction histories (${stats.histories.length}/${stats.hslots})`)
+            .setDescription(histories)
+            .setColor("#7f7fff");
+        message.channel.send({ embeds: [embed] });
     }
 }
 
