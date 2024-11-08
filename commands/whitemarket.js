@@ -151,6 +151,7 @@ module.exports.run = async (client, message, args, prefix, player, db) => {
     if (crntbey.level === 100) embed.setFooter("Level MAX");
     embed.addField("Generation", "⭐".repeat(crntbey.gen || 1));
 
+    message.channel.send({ embeds: [embed] });
   } else if (option === "buy") {
     if (!args[1]) return message.reply("Please provide the ID of the Bey you wish to buy.");
 
